@@ -43,6 +43,16 @@ def listInfo():
     fp.close()
 
 
+def getByWebsite(website):
+    fp = open('parole.txt', 'r')
+    Lines = fp.readlines()
+    for line in Lines:
+        listOfWords = line.split()
+        if(listOfWords[0] == website):
+            print(listOfWords[0]+ ' ' + listOfWords[1] + ' ' + decrypt(listOfWords[2], b64decode(listOfWords[3].encode('utf-8'))))
+    fp.close()
+
+
 def removeInfo(website, username):
     fp = open('parole.txt', 'r')
     Lines = fp.readlines()
@@ -57,7 +67,7 @@ def removeInfo(website, username):
     fp.close()
 
 
-master_password = 'salamalecu123456'
+master_password = 'parolasecreta123'
 AESkey = master_password.encode('utf-8')
 iv = Random.new().read(AES.block_size)
 def checkPassword():
@@ -90,6 +100,11 @@ if '-remove' in sys.argv:
 if '-list' in sys.argv:
     checkPassword()
     listInfo()
+
+if '-get' in sys.argv:
+    website = return_args('-get', 0)
+    checkPassword()
+    getByWebsite(website)
 
 if '-help' in sys.argv:
     print('Comenzile disponibile sunt:')
