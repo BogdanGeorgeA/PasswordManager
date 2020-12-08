@@ -79,22 +79,37 @@ def checkPassword():
 
 if '-add' in sys.argv:
     checkPassword()
-    website = return_args('-add', 0)
-    username = return_args('-add', 1)
-    password = return_args('-add', 2)
+    try:
+        website = return_args('-add', 0)
+        username = return_args('-add', 1)
+        password = return_args('-add', 2)
+    except:
+        print('Numar gresit de argumente pentru comanda add!')
+        print('pwmanager.py <master_password> -add <website> <username> <password>')
+        sys.exit(1)
     addInfo(website, username, password)
 
 if '-update' in sys.argv:
     checkPassword()
-    website = return_args('-update', 0)
-    username = return_args('-update', 1)
-    password = return_args('-update', 2)
+    try:
+        website = return_args('-update', 0)
+        username = return_args('-update', 1)
+        password = return_args('-update', 2)
+    except:
+        print('Numar gresit de argumente pentru comanda update!')
+        print('pwmanager.py <master_password> -update <website> <username> <new_password>')
+        sys.exit(1)
     updateInfo(website, username, password)
 
 if '-remove' in sys.argv:
     checkPassword()
-    website = return_args('-remove', 0)
-    username = return_args('-remove', 1)
+    try:
+        website = return_args('-remove', 0)
+        username = return_args('-remove', 1)
+    except:
+        print('Numar gresit de argumente pentru comanda remove!')
+        print('pwmanager.py <master_password> -remove <website> <username>')
+        sys.exit(1)
     removeInfo(website, username)
 
 if '-list' in sys.argv:
@@ -102,8 +117,13 @@ if '-list' in sys.argv:
     listInfo()
 
 if '-get' in sys.argv:
-    website = return_args('-get', 0)
     checkPassword()
+    try:
+        website = return_args('-get', 0)
+    except:
+        print('Numar gresit de argumente pentru comanda get!')
+        print('pwmanager.py <master_password> -get <website>')
+        sys.exit(1)
     getByWebsite(website)
 
 if '-help' in sys.argv:
@@ -111,4 +131,5 @@ if '-help' in sys.argv:
     print('pwmanager.py <master_password> -add <website> <username> <password>')
     print('pwmanager.py <master_password> -update <website> <username> <new_password>')
     print('pwmanager.py <master_password> -remove <website> <username>')
+    print('pwmanager.py <master_password> -get <website>')
     print('pwmanager.py <master_password> -list')
