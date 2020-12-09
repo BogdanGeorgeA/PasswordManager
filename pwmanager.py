@@ -24,18 +24,30 @@ def return_args(flag, offset):
 
 def addInfo(website, username, password):
     encrypted_password = ecrypt(password)
-    fp = open('parole.txt', 'a')
+    try:
+        fp = open('parole_criptate', 'a')
+    except:
+        print('Eroare la deschiderea fisierului sau fisierul nu a fost creat inca!')
+        sys.exit(1)
     fp.write(website + ' ' + username + ' ' + encrypted_password + ' ' + b64encode(iv).decode('utf-8') + '\n')
     fp.close()
 
 
 def updateInfo(website, username, password):
-    removeInfo(website, username)
-    addInfo(website, username, password)
+    if removeInfo(website, username) == 1:
+        addInfo(website, username, password)
+        print("Datele au fost actualizate cu succes!")
+    else:
+        print("Datele " + website + " " + username + " nu se afla in fisier!")
+    
 
 
 def listInfo():
-    fp = open('parole.txt', 'r')
+    try:
+        fp = open('parole_criptate', 'r')
+    except:
+        print('Eroare la deschiderea fisierului sau fisierul nu a fost creat inca!')
+        sys.exit(1)
     Lines = fp.readlines()
     for line in Lines:
         listOfWords = line.split()
@@ -44,27 +56,43 @@ def listInfo():
 
 
 def getByWebsite(website):
-    fp = open('parole.txt', 'r')
+    try:
+        fp = open('parole_criptate', 'r')
+    except:
+        print('Eroare la deschiderea fisierului sau fisierul nu a fost creat inca!')
+        sys.exit(1)
     Lines = fp.readlines()
+    ok = 0
     for line in Lines:
         listOfWords = line.split()
         if(listOfWords[0] == website):
             print(listOfWords[0]+ ' ' + listOfWords[1] + ' ' + decrypt(listOfWords[2], b64decode(listOfWords[3].encode('utf-8'))))
+            ok = 1
+    if ok == 0:
+        print("Date despre " + website + " nu exista in fisier!")
     fp.close()
 
 
 def removeInfo(website, username):
-    fp = open('parole.txt', 'r')
+    try:
+        fp = open('parole_criptate', 'r')
+    except:
+        print('Eroare la deschiderea fisierului sau fisierul nu a fost creat inca!')
+        sys.exit(1)
     Lines = fp.readlines()
     data = ''
+    ok = 0
     for line in Lines:
         listOfWords = line.split()
         if listOfWords[0] != website or listOfWords[1] != username:
             data = data + line
+        else:
+            ok = 1
     fp.close()
-    fp = open('parole.txt', 'w')
+    fp = open('parole_criptate', 'w')
     fp.write(data)
     fp.close()
+    return ok
 
 
 master_password = 'parolasecreta123'
@@ -88,6 +116,7 @@ if '-add' in sys.argv:
         print('pwmanager.py <master_password> -add <website> <username> <password>')
         sys.exit(1)
     addInfo(website, username, password)
+    print("Datele au fost adaugate cu succes!")
 
 if '-update' in sys.argv:
     checkPassword()
@@ -110,7 +139,10 @@ if '-remove' in sys.argv:
         print('Numar gresit de argumente pentru comanda remove!')
         print('pwmanager.py <master_password> -remove <website> <username>')
         sys.exit(1)
-    removeInfo(website, username)
+    if removeInfo(website, username) == 1:
+        print("Datele au fost eliminate cu succes!")
+    else:
+        print("Datele " + website + " " + username + " nu se afla in fisier!")
 
 if '-list' in sys.argv:
     checkPassword()
